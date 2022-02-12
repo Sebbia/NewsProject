@@ -1,4 +1,6 @@
 package com.example.newsproject.ui.categoryList.recycler;
 
-public class CategoryListDecorator {
+import androidx.recyclerview.widget.RecyclerView
+
+class CategoryListDecorator: RecyclerView.ItemDecoration() {
 }
