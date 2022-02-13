@@ -17,19 +17,23 @@ class NewsViewModelImpl @Inject constructor(
     private val TAG = "MyNewsViewModel"
     override val news: MutableLiveData<News> = MutableLiveData<News>()
 
+    init {
+        Log.d(TAG, "was initialized")
+    }
+
     override fun getNews(newsId: Long) {
         repository.getNews(
             newsId,
             onSuccess = {
-                Log.d(TAG, "getCategoryList onSuccess called")
+                Log.d(TAG, "getNews onSuccess called")
                 news.value = it
             },
             onPartialSuccess = {
-                Log.d(TAG, "getCategoryList onPartialSuccess called")
+                Log.d(TAG, "getNews onPartialSuccess called")
                 news.value = it
             },
             onFailure = {
-                Log.d(TAG, "getCategoryList onFailure called")
+                Log.d(TAG, "getNews onFailure called")
                 //TODO not yet impl
             }
         )

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,8 +27,8 @@ class CategoryListFragment :
     private var _binding: FragmentCategoryListBinding? = null
     private val binding get() = _binding!!
 
-    @Inject
-    lateinit var viewModel: CategoryListViewModel
+    val viewModel: CategoryListViewModel by viewModels<CategoryListViewModelImpl>()
+    //ViewModelProvider(this).get(CategoryListViewModel::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +37,6 @@ class CategoryListFragment :
     ): View {
         Log.d(TAG, "onCreateView called")
         _binding = FragmentCategoryListBinding.inflate(inflater, container, false)
-        //viewModel = ViewModelProvider(this).get(CategoryListViewModel::class.java)
         val categoryAdapter = CategoryListAdapter(this)
         binding.categoryList.apply {
             val spanCount = SpanCount.getSpanCount(
