@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsproject.R
 import com.example.newsproject.databinding.FragmentNewsListBinding
 import com.example.newsproject.ui.ItemClickListener
+import com.example.newsproject.ui.categoryList.CategoryListViewModelImpl
 import com.example.newsproject.ui.newsList.recycler.NewsListAdapter
 import com.example.newsproject.ui.newsList.recycler.NewsListDecorator
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,8 +30,8 @@ class NewsListFragment :
     private var _binding: FragmentNewsListBinding? = null
     private val binding get() = _binding!!
 
-    @Inject
-    lateinit var viewModel: NewsListViewModel
+    val viewModel: NewsListViewModel by viewModels<NewsListViewModelImpl>()
+        //ViewModelProvider(this).get(NewsListViewModelImpl::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,9 +40,7 @@ class NewsListFragment :
     ): View {
         Log.d(TAG, "onCreateView called")
         _binding = FragmentNewsListBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(NewsListViewModelImpl::class.java)
-        viewModel.getNewsList(args.categoryId, 0)//TODO change to subscribe
-        //right now observe method called twice: 1 - from restoring state, 2 - from call to repo/http call
+        viewModel.getNewsList(args.categoryId, 0)//TODO place to viewmodel
         val newsAdapter = NewsListAdapter(this)
         binding.newsList.apply {
             layoutManager = LinearLayoutManager(context)

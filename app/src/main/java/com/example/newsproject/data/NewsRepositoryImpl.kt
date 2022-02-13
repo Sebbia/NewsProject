@@ -2,22 +2,24 @@ package com.example.newsproject.data;
 
 import android.util.Log
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class NewsRepositoryImpl @Inject constructor(
     private val remoteDS: NewsRemoteDataSource
 ) : NewsRepository {
     private val TAG = "MyNewsRepository"
 
     //by Google definition it's in-memory cache -_-
-    private var categoryList: List<Category> = listOf()
-    private var newsList: List<News> = listOf()
+    private var cache: NewsCache = NewsCache()
 
     override fun getCategoryList(
         onSuccess: (List<Category>) -> Unit,
         onFailure: (String) -> Unit
     ) {
-        if (categoryList.isNotEmpty()) {
-            onSuccess(categoryList)
+        Log.d(TAG, "getCategoryList was called")
+        if (cache.categoryList.isNotEmpty()) {
+            onSuccess(cache.categoryList)
         } else {
             remoteDS.getCategoryList { result ->
                 result
@@ -25,7 +27,7 @@ class NewsRepositoryImpl @Inject constructor(
                         Log.d(TAG, "getCategoryList onSuccess called")
                         if (it != null) {
                             if (it.code == 0) {
-                                categoryList = it.list
+                                cache.categoryList = it.list
                                 onSuccess(it.list)
                             } else {
                                 Log.i(TAG, it.message)
@@ -51,8 +53,9 @@ class NewsRepositoryImpl @Inject constructor(
         onSuccess: (List<News>) -> Unit,
         onFailure: (String) -> Unit
     ) {
-        if (newsList.isNotEmpty()) {
-            onSuccess(newsList)
+        Log.d(TAG, "getNewsList was called")
+        if (cache.containsNewsPage(categoryId, page)) {
+            onSuccess(cache.getNewsList(categoryId, page))
         } else {
             remoteDS.getNewsList(categoryId, page) { result ->
                 result
@@ -60,7 +63,7 @@ class NewsRepositoryImpl @Inject constructor(
                         Log.d(TAG, "getNewsList onSuccess called")
                         if (it != null) {
                             if (it.code == 0) {
-                                newsList = it.list
+                                cache.addNewsPage(categoryId, page, it.list)
                                 onSuccess(it.list)
                             } else {
                                 Log.i(TAG, it.message)
@@ -87,16 +90,18 @@ class NewsRepositoryImpl @Inject constructor(
         //here Failure is error during fullDescription loading
         onFailure: (String) -> Unit
     ) {
-        val currentNews = newsList.getNews(newsId)
-        //State, where currentNews == null, is unreachable with current navigation logic
-        if (currentNews.state) {//TODO check logic
+        Log.d(TAG, "getNews was called")
+        val currentNews = cache.getNews(newsId)
+        //State, where currentNews == null (empty object in this case),
+        // is unreachable with current navigation logic
+        if (currentNews.state) {
             onSuccess(currentNews)
         } else {
             onPartialSuccess(currentNews)
             getNewsFromRemote(newsId, onSuccess, onFailure)
         }
     }
-
+//TODO state = false somewhere, check logic
     private fun getNewsFromRemote(
         newsId: Long,
         onSuccess: (News) -> Unit,
@@ -108,7 +113,7 @@ class NewsRepositoryImpl @Inject constructor(
                     Log.d(TAG, "getNews onSuccess called")
                     if (it != null) { //we got something from api
                         if (it.code == 0) {
-                            newsList.getNews(newsId).state = true
+                            cache.getNews(newsId).state = true
                             onSuccess(it.news)
                         } else {
                             Log.i(TAG, it.message)
