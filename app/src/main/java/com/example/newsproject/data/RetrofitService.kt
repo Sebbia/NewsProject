@@ -7,12 +7,12 @@ interface RetrofitService {
     @GET("categories")
     fun getCategoryList(): Call<ApiCategoryList>
 
-    @GET("news/categories/{id}/news")//TODO check query building
+    @GET("categories/{id}/news")
     fun getNewsList(
         @Path("id") id: Long,
         @Query("page") page: Int
     ): Call<ApiNewsList>
 
-    @GET("news/details")
+    @GET("details")
     fun getNews(@Query("id") id: Long): Call<ApiNews>
 }
