@@ -10,12 +10,12 @@ import com.example.newsproject.ui.ItemClickListener
 
 class NewsListAdapter(val listener: ItemClickListener) :
     RecyclerView.Adapter<NewsListItemViewHolder>() {
-    private var list: MutableList<News> = mutableListOf()
+    private var list: List<News> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsListItemViewHolder {
         val view = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.category_list_item, parent, false)
+            .inflate(R.layout.news_list_item, parent, false)
         return NewsListItemViewHolder(view)
     }
 
@@ -27,7 +27,7 @@ class NewsListAdapter(val listener: ItemClickListener) :
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(newsList: List<News>) {
-        list.addAll(newsList)
+        list = newsList
         notifyDataSetChanged()
     }
 }

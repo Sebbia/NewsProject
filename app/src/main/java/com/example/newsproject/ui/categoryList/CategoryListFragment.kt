@@ -9,11 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.newsproject.R
 import com.example.newsproject.databinding.FragmentCategoryListBinding
 import com.example.newsproject.ui.ItemClickListener
 import com.example.newsproject.ui.categoryList.recycler.CategoryListAdapter
 import com.example.newsproject.ui.categoryList.recycler.CategoryListDecorator
+import com.example.newsproject.utils.SpanCount
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CategoryListFragment :
     Fragment(),
     ItemClickListener {
@@ -21,7 +26,8 @@ class CategoryListFragment :
     private var _binding: FragmentCategoryListBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var viewModel: CategoryListViewModel //TODO replace with interface
+    @Inject
+    lateinit var viewModel: CategoryListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,13 +36,21 @@ class CategoryListFragment :
     ): View {
         Log.d(TAG, "onCreateView called")
         _binding = FragmentCategoryListBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(CategoryListViewModel::class.java)
+        //viewModel = ViewModelProvider(this).get(CategoryListViewModel::class.java)
         val categoryAdapter = CategoryListAdapter(this)
         binding.categoryList.apply {
-            layoutManager = GridLayoutManager(context, 2)
-            //TODO add dynamic spanCount based on screen wide or smt
+            val spanCount = SpanCount.getSpanCount(
+                context,
+                resources.getDimension(R.dimen.category_card_width)
+            )
+            layoutManager = GridLayoutManager(context, spanCount)
             adapter = categoryAdapter
-            addItemDecoration(CategoryListDecorator())
+            addItemDecoration(
+                CategoryListDecorator(
+                    spanCount,
+                    (resources.getDimension(R.dimen.content_margin) / resources.displayMetrics.density).toInt()
+                )
+            )
         }
         viewModel.list.observe(viewLifecycleOwner) {
             Log.d(TAG, "CategoryList data was changed")
