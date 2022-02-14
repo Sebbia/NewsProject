@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-/*
+/**
     Pass parameters without screen density multiplier
  */
 class NewsListDecorator constructor(

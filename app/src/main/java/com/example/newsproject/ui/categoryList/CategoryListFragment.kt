@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.newsproject.R
@@ -17,7 +16,6 @@ import com.example.newsproject.ui.categoryList.recycler.CategoryListAdapter
 import com.example.newsproject.ui.categoryList.recycler.CategoryListDecorator
 import com.example.newsproject.utils.SpanCount
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class CategoryListFragment :
@@ -28,7 +26,6 @@ class CategoryListFragment :
     private val binding get() = _binding!!
 
     val viewModel: CategoryListViewModel by viewModels<CategoryListViewModelImpl>()
-    //ViewModelProvider(this).get(CategoryListViewModel::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,14 +38,15 @@ class CategoryListFragment :
         binding.categoryList.apply {
             val spanCount = SpanCount.getSpanCount(
                 context,
-                resources.getDimension(R.dimen.category_card_width)
+                resources.getDimension(R.dimen.min_category_card_width)
             )
             layoutManager = GridLayoutManager(context, spanCount)
             adapter = categoryAdapter
             addItemDecoration(
                 CategoryListDecorator(
                     spanCount,
-                    (resources.getDimension(R.dimen.content_margin) / resources.displayMetrics.density).toInt()
+                    resources.getDimension(R.dimen.content_margin),
+                    true
                 )
             )
         }

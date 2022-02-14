@@ -5,5 +5,4 @@ import com.example.newsproject.data.News
 
 interface NewsViewModel {
     val news: MutableLiveData<News>
-    fun getNews(newsId: Long)
 }
