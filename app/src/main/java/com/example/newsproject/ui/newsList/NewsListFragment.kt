@@ -5,20 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsproject.R
 import com.example.newsproject.databinding.FragmentNewsListBinding
 import com.example.newsproject.ui.ItemClickListener
-import com.example.newsproject.ui.categoryList.CategoryListViewModelImpl
 import com.example.newsproject.ui.newsList.recycler.NewsListAdapter
 import com.example.newsproject.ui.newsList.recycler.NewsListDecorator
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class NewsListFragment :
@@ -31,7 +30,6 @@ class NewsListFragment :
     private val binding get() = _binding!!
 
     val viewModel: NewsListViewModel by viewModels<NewsListViewModelImpl>()
-        //ViewModelProvider(this).get(NewsListViewModelImpl::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +38,7 @@ class NewsListFragment :
     ): View {
         Log.d(TAG, "onCreateView called")
         _binding = FragmentNewsListBinding.inflate(inflater, container, false)
-        viewModel.getNewsList(args.categoryId, 0)//TODO place to viewmodel
+        viewModel.onCreateView()
         val newsAdapter = NewsListAdapter(this)
         binding.newsList.apply {
             layoutManager = LinearLayoutManager(context)
@@ -54,8 +52,21 @@ class NewsListFragment :
                     contentMargin
                 )
             )
+            /*
+            pretty lazy implementation of paging :/
+            It's bad because:
+            1. Do something on each scroll can drastically worsen performance
+            2. ScrollListener sees each gesture as multiple inputs and have time to call getNewPage several times
+            */
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (!recyclerView.canScrollVertically(1)) {
+                        viewModel.getNewPage()
+                    }
+                }
+            })
         }
-        //TODO add paging after scrolling
         viewModel.list.observe(viewLifecycleOwner) {
             Log.d(TAG, "NewsList data was changed")
             newsAdapter.updateList(it)
@@ -71,6 +82,7 @@ class NewsListFragment :
         Log.d(TAG, "onDestroyView called")
         super.onDestroyView()
         _binding = null
+        viewModel.onDestroyView()
     }
 
     override fun onItemClicked(id: Long) {

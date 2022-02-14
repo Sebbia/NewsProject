@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_category_list">
         <action
             android:id="@+id/action_categoryListFragment_to_newsListFragment"
-            app:destination="@id/newsListFragment">
+            app:destination="@id/newsListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right">
             <argument
                 android:name="categoryId"
                 app:argType="long" />
@@ -29,7 +33,11 @@
             app:argType="long" />
         <action
             android:id="@+id/action_newsListFragment_to_newsFragment"
-            app:destination="@id/newsFragment">
+            app:destination="@id/newsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right">
             <argument
                 android:name="newsId"
                 app:argType="long" />

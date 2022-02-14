@@ -13,7 +13,9 @@ import com.example.newsproject.ui.newsList.NewsListViewModelImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.assisted.Assisted
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -24,7 +26,7 @@ abstract class AppBindModule {
     @Singleton
     @Binds
     abstract fun bindNewsRemoteDataSource(
-        newsRemoteDataSourceImpl: NewsRemoteDataSourceImpl
+        impl: NewsRemoteDataSourceImpl
     ): NewsRemoteDataSource
 
 }
@@ -39,22 +41,22 @@ class AppProvideModule {
     ): NewsRepository = NewsRepositoryImpl(remoteDS)
 }
 
-
 @Module
 @InstallIn(ViewModelComponent::class)
-class ViewModelProvideModule {
-    @Provides
-    fun provideCategoryListViewModelImpl(
-        repo: NewsRepository
-    ): CategoryListViewModel = CategoryListViewModelImpl(repo)
+abstract class ViewModelProvideModule {
+    @Binds
+    abstract fun bindCategoryListViewModelImpl(
+        impl: CategoryListViewModelImpl
+    ): CategoryListViewModel
 
-    @Provides
-    fun provideNewsListViewModelImpl(
-        repo: NewsRepository
-    ): NewsListViewModel = NewsListViewModelImpl(repo)
+    @Binds
+    abstract fun bindNewsListViewModelImpl(
+        impl: NewsListViewModelImpl
+    ): NewsListViewModel
 
-    @Provides
-    fun provideNewsViewModelImpl(
-        repo: NewsRepository
-    ): NewsViewModel = NewsViewModelImpl(repo)
+    @Binds
+    abstract fun bindNewsViewModelImpl(
+        impl: NewsViewModelImpl
+    ): NewsViewModel
+
 }

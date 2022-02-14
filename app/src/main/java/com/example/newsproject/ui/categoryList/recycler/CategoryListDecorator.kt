@@ -5,13 +5,11 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
-/*
-    Pass parameters without screen density multiplier
- */
+
 class CategoryListDecorator(
     private val spanCount: Int = 1,
-    private val spacing: Int = 0,
-    private val includeEdge: Boolean = true
+    private val spacing: Float = 0F,
+    private val includeEdge: Boolean = false
 ) : ItemDecoration() {
 
     override fun getItemOffsets(
@@ -22,18 +20,19 @@ class CategoryListDecorator(
     ) {
         val position = parent.getChildAdapterPosition(view)
         val column = position % spanCount
+        val spacingInt = spacing.toInt()
         if (includeEdge) {
-            outRect.left = spacing - column * spacing / spanCount
-            outRect.right = (column + 1) * spacing / spanCount
+            outRect.left = spacingInt - column * spacingInt / spanCount
+            outRect.right = (column + 1) * spacingInt / spanCount
             if (position < spanCount) {
-                outRect.top = spacing
+                outRect.top = spacingInt
             }
-            outRect.bottom = spacing
+            outRect.bottom = spacingInt
         } else {
-            outRect.left = column * spacing / spanCount
-            outRect.right = spacing - (column + 1) * spacing / spanCount
+            outRect.left = column * spacingInt / spanCount
+            outRect.right = spacingInt - (column + 1) * spacingInt / spanCount
             if (position >= spanCount) {
-                outRect.top = spacing
+                outRect.top = spacingInt
             }
         }
     }

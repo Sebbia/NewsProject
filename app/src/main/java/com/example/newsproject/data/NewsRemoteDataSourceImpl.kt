@@ -1,17 +1,15 @@
 package com.example.newsproject.data
 
 import android.util.Log
-import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class NewsRemoteDataSourceImpl @Inject constructor() : NewsRemoteDataSource {
+class NewsRemoteDataSourceImpl @Inject constructor() :
+    NewsRemoteDataSource{
     private val BASE_URL = "http://testtask.sebbia.com/v1/news/"
     private val TAG = "MyNewsRemoteDataSource"
 

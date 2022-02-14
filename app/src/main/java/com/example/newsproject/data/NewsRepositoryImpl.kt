@@ -2,15 +2,12 @@ package com.example.newsproject.data;
 
 import android.util.Log
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class NewsRepositoryImpl @Inject constructor(
     private val remoteDS: NewsRemoteDataSource
 ) : NewsRepository {
     private val TAG = "MyNewsRepository"
 
-    //by Google definition it's in-memory cache -_-
     private var cache: NewsCache = NewsCache()
 
     override fun getCategoryList(
@@ -101,7 +98,7 @@ class NewsRepositoryImpl @Inject constructor(
             getNewsFromRemote(newsId, onSuccess, onFailure)
         }
     }
-//TODO state = false somewhere, check logic
+
     private fun getNewsFromRemote(
         newsId: Long,
         onSuccess: (News) -> Unit,
@@ -113,7 +110,7 @@ class NewsRepositoryImpl @Inject constructor(
                     Log.d(TAG, "getNews onSuccess called")
                     if (it != null) { //we got something from api
                         if (it.code == 0) {
-                            cache.getNews(newsId).state = true
+                            cache.setNews(it.news, true)
                             onSuccess(it.news)
                         } else {
                             Log.i(TAG, it.message)

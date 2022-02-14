@@ -2,26 +2,25 @@ package com.example.newsproject.ui.news
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.newsproject.data.News
 import com.example.newsproject.data.NewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModelImpl @Inject constructor(
-    private val repository: NewsRepository
+    private val repository: NewsRepository,
+    private val state: SavedStateHandle
 ) : ViewModel(),
     NewsViewModel {
     private val TAG = "MyNewsViewModel"
-    override val news: MutableLiveData<News> = MutableLiveData<News>()
+    override val news: MutableLiveData<News> = MutableLiveData()
+    val newsId = state.get<Long>("newsId") ?: -1
 
     init {
         Log.d(TAG, "was initialized")
-    }
-
-    override fun getNews(newsId: Long) {
         repository.getNews(
             newsId,
             onSuccess = {

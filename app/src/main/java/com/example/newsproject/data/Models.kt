@@ -13,7 +13,7 @@ data class ApiCategoryList(
 data class ApiNewsList(
     val code: Int = -1,
     val message: String = "",
-    val list: List<News> = emptyList()
+    val list: MutableList<News> = mutableListOf()
 )
 
 data class ApiNews(
@@ -21,13 +21,6 @@ data class ApiNews(
     val message: String = "",
     val news: News = News()
 )
-
-//Lists' Extensions
-fun List<News>.getNews(id: Long): News {
-    for (item in this)
-        if (item.id == id) return item
-    return News()
-}
 
 //Cached Data
 data class NewsCache(
@@ -41,7 +34,7 @@ data class NewsCache(
         return false
     }
 
-    fun addNewsPage(categoryId: Long, page: Int, list: List<News>) {
+    fun addNewsPage(categoryId: Long, page: Int, list: MutableList<News>) {
         newsPageList.add(NewsPage(categoryId, page, list))
     }
 
@@ -57,12 +50,22 @@ data class NewsCache(
                 if (news.id == newsId) return news
         return News()
     }
+
+    fun setNews(news: News, state: Boolean = false) {
+        for (page in newsPageList)
+            for (i in page.newsList.indices)
+                if (page.newsList[i].id == news.id) {
+                    news.state = state
+                    page.newsList[i] = news
+                    return
+                }
+    }
 }
 
 data class NewsPage(
     val categoryId: Long = -1,
     val page: Int = -1,
-    val newsList: List<News> = listOf()
+    val newsList: MutableList<News> = mutableListOf()
 )
 
 

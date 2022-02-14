@@ -2,7 +2,7 @@ package com.example.newsproject.utils;
 
 import android.content.Context
 
-/*
+/**
     Pass parameters with screen density multiplier.
     resources.getDimension() will return Float = (dp value * screen density)
     just pass it as itemWidth

@@ -6,8 +6,10 @@ import com.example.newsproject.data.News
 import com.example.newsproject.utils.SingleLiveEvent
 
 interface NewsListViewModel {
-    val list: MutableLiveData<List<News>>
+    val list: MutableLiveData<MutableList<News>>
     val navEvent: SingleLiveEvent<NavDirections>
-    fun getNewsList(newsId: Long, page: Int)
+    fun onCreateView()
+    fun getNewPage()
+    fun onDestroyView()
     fun onItemClicked(newsId: Long)
 }

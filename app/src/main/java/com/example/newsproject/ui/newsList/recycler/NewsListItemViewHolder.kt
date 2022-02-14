@@ -8,7 +8,6 @@ import com.example.newsproject.R
 import com.example.newsproject.data.News
 import com.example.newsproject.ui.ItemClickListener
 import java.text.SimpleDateFormat
-import java.util.*
 
 class NewsListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     private val titleView: TextView = view.findViewById(R.id.news_title)
